@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NASA POWER - All Sky Longwave Downward Radiation</title>
+  <style>
+    html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; }
+  </style>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.28/"></script>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/CSVLayer"
+    ], function(Map, MapView, CSVLayer) {
+
+      const csvLayer = new CSVLayer({
+        url: "region.csv",
+        latitudeField: "lat",
+        longitudeField: "lon",
+        renderer: {
+          type: "simple",
+          symbol: {
+            type: "simple-marker",
+            color: [0, 120, 200, 0.8],
+            size: 6
+          }
+        },
+        popupTemplate: {
+          title: "NASA POWER Data",
+          content: [
+            { type: "fields", fieldInfos: [
+              { fieldName: "lat", label: "Latitude" },
+              { fieldName: "lon", label: "Longitude" },
+              { fieldName: "time", label: "Date" },
+              { fieldName: "ALLSKY_SFC_LW_DWN", label: "LW Down (W/m²)" }
+            ]}
+          ]
+        }
+      });
+
+      const map = new Map({
+        basemap: "topo-vector",
+        layers: [csvLayer]
+      });
+
+      const view = new MapView({
+        container: "map",
+        map: map,
+        center: [-83, 36],
+        zoom: 5
+      });
+
+    });
+  </script>
+</body>
+</html>
